@@ -1,6 +1,6 @@
 res/mp3/
 storage/emails/
 utils/conf_address.py
-untis/conf_openai.py
+utils/conf_openai.py
 *__pycache__*
 *test*
