@@ -9,7 +9,7 @@ import pygame._sdl2.audio as sdl2_audio
 if __name__ == "__main__":
     from conf_app import SHINANO_LOVE
 else:
-    from conf_app import SHINANO_LOVE
+    from .conf_app import SHINANO_LOVE
 
 def get_devices(capture_devices=False):
     init_by_me = not pygame.mixer.get_init()
@@ -42,10 +42,10 @@ def playsound(soundfile):
     channel = sound.play(fade_ms=500)
     channel.set_volume(0.25,0.5)
     time.sleep(0.02)
-    sound = pygame.mixer.Sound(soundfile)
-    sound.set_volume(0.3)
-    channel = sound.play(fade_ms=300)
-    channel.set_volume(0.4,0.45)
+    # sound = pygame.mixer.Sound(soundfile)
+    # sound.set_volume(0.3)
+    # channel = sound.play(fade_ms=300)
+    # channel.set_volume(0.4,0.45)
 
 def sound_guard():
     while pygame.mixer.get_busy():

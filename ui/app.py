@@ -13,11 +13,16 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import scrolledtext
-from sfx import sound_mail, sound_guard, playsound
-# from conf_app import *
+
+import ctypes
+
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
+
 if __name__ == "__main__":
     from sfx import sound_mail, sound_guard
+    from conf_app import *
 else:
+    from .conf_app import *
     from .sfx import sound_mail, sound_guard
 
 playing_sound = False
@@ -27,7 +32,7 @@ def sound_loop():
     while playing_sound:
         try:
             sound_mail()
-            time.sleep(10)
+            time.sleep(15)
         except:
             break
 
@@ -40,12 +45,25 @@ def close_message_box(messagebox):
 def msgbox(title, message):
     messagebox = tk.Tk()
     messagebox.title(title)
+
+    messagebox.geometry(f"{BOX_WIDTH}x{BOX_HEIGHT}")
     
-    label = tk.Label(messagebox, text=message)
-    label.pack(padx=20, pady=20)
-    
+    v = tk.Scrollbar(messagebox, orient='vertical')
+    v.pack(side='right', fill='y')
+
     close_button = tk.Button(messagebox, text="Close", command=lambda: close_message_box(messagebox))
-    close_button.pack(pady=10)
+    close_button.pack(pady=30)
+    
+    # label = tk.Label(messagebox, text=message, font=("SF Pro Display", 14), wraplength=BOX_WIDTH-200, justify="left", )
+    # label.pack(padx=50, pady=50)
+    text = tk.Text(messagebox, font=("SF Pro Display", 14), wrap="word", yscrollcommand=v.set)
+    text.insert(tk.INSERT, message)
+    text.pack(padx=50, pady=50)
+    v.config(command=text.yview)
+
+    messagebox.wm_attributes("-topmost", 1)
+    messagebox.wm_attributes("-toolwindow", 1)
+    messagebox.wm_attributes("-disabled", 0)
     
     messagebox.protocol("WM_DELETE_WINDOW", lambda: close_message_box(messagebox))
     
@@ -64,4 +82,5 @@ def notification(title, message):
     
 
 # test
-notification("test", "test")
+if __name__ == "__main__":
+    notification("test", "long text "*200)
