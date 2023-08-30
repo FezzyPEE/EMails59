@@ -33,7 +33,7 @@ def set_checked_all():
         emails_dump_json(account, emails)
 
 if __name__ == "__main__":
-    # set_proxy()
+    set_proxy()
     # check_emails()
     # emails_set_id(accounts[0])
     # set_checked_all()
