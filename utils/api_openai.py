@@ -2,7 +2,7 @@
 import openai
 import os
 from copy import deepcopy as dcopy
-from conf_openai import *
+from .conf_openai import *
 
 # import sleep
 from time import sleep

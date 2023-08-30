@@ -4,10 +4,12 @@ import pygame
 import os
 import time 
 import random
-
 import pygame._sdl2.audio as sdl2_audio
 
-from conf_app import SHINANO_LOVE
+if __name__ == "__main__":
+    from conf_app import SHINANO_LOVE
+else:
+    from conf_app import SHINANO_LOVE
 
 def get_devices(capture_devices=False):
     init_by_me = not pygame.mixer.get_init()
@@ -31,6 +33,9 @@ def sound_mail(device=get_devices()[0]):
         soundfile = os.path.join(sound_path,soundlist[0])
     else:
         soundfile = os.path.join(sound_path,"mail_shinano.mp3")
+    playsound(soundfile)
+
+def playsound(soundfile):
     print("play sound: ",soundfile)
     sound = pygame.mixer.Sound(soundfile)
     sound.set_volume(0.8)

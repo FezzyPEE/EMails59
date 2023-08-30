@@ -6,8 +6,9 @@ import json
 import email
 from email import policy
 from email.parser import BytesParser
-from conf_imap import imap_id, pharser_keys, EmailType, email_name_map
-from conf_address import accounts
+from .conf_imap import imap_id, pharser_keys, EmailType, email_name_map
+from .conf_address import accounts
+from .email_classifier import email_classify
 from imapclient import IMAPClient
 import sys
 import os
@@ -68,7 +69,7 @@ def emails_phraser(raw_email):
         raise e
     return the_email
 
-def emails_load_raw(account):
+def emails_cook_raw(account):
     acc_folder = op.join(store_path, account['email'])
     for filename in os.listdir(acc_folder):
         filepath = op.join(acc_folder, filename)
@@ -81,6 +82,7 @@ def emails_load_raw(account):
             filepath = filepath.replace(".eml", ".json")
             if op.exists(filepath):
                 continue
+            # the_email = email_classify(the_email)
             with open(filepath, "w") as f:
                 json.dump(the_email.__dict__, f, indent=4)
         # elif filename.endswith(".json"):
@@ -90,14 +92,32 @@ def emails_load_raw(account):
 
 def emails_load_json(account, buffer):
     acc_folder = op.join(store_path, account['email'])
-    for filename in os.listdir(acc_folder):
+    for i, filename in enumerate(os.listdir(acc_folder)):
         filepath = op.join(acc_folder, filename)
         if filename.endswith(".json"):
             with open(filepath, "r") as f:
-                the_email = json.load(f)
+                j = json.load(f)
+            the_email = EmailType(**j)
+            if the_email.summary == None:
+                try:
+                    the_email = email_classify(the_email)
+                    with open(filepath, "w") as f:
+                        json.dump(the_email.__dict__, f, indent=4)
+                except Exception as e:
+                    print(f"Error: {i} th email classification failed. {the_email.subject}")
+                    raise e
             buffer.append(the_email)
+
+def emails_dump_json(account, buffer):
+    acc_folder = op.join(store_path, account['email'])
+    for i, email in enumerate(buffer):
+        filepath = op.join(acc_folder, f"{email.id}.json")
+        with open(filepath, "w") as f:
+            json.dump(email.__dict__, f, indent=4)
     
-# emails_fetch(accounts[0])
-emails = []
-emails_load_json(accounts[0],emails)
-print(len(emails))
+if __name__ == "__main__":
+    emails_fetch(accounts[0])
+    emails_cook_raw(accounts[0])
+    emails = []
+    emails_load_json(accounts[0],emails)
+    print(len(emails))
