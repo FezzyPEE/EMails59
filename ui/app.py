@@ -26,13 +26,18 @@ else:
     from .sfx import sound_mail, sound_guard
 
 playing_sound = False
+already_playing = False
 
 def sound_loop():
     global playing_sound
+    global already_playing
     while playing_sound:
         try:
-            sound_mail()
-            time.sleep(15)
+            if not already_playing:
+                already_playing = True
+                sound_mail()
+                time.sleep(20)
+                already_playing = False
         except:
             break
 

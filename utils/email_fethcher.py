@@ -14,6 +14,8 @@ import sys
 import os
 from os import path as op
 
+NO_CONTENT = "(This email is empty or contains only attachments.)"
+
 store_path = op.dirname(op.dirname(op.abspath(__file__)))
 store_path = op.join(store_path, "storage", "emails")
 print(store_path)
@@ -64,7 +66,12 @@ def emails_phraser(raw_email):
                     setattr(the_email, "body", the_email.body + part.get_body(preferencelist=("plain","html")).get_content())
                 except:
                     pass
-        setattr(the_email, "body", email_message.get_body(preferencelist=("plain","html")).get_content())
+        body = email_message.get_body(preferencelist=("plain","html"))
+        if body == None:
+            body = "(This email is empty or contains only attachments.)"
+            setattr(the_email, "body", body)
+        else:
+            setattr(the_email, "body", body.get_content())
     except Exception as e:
         print(f"Error: email body pharsing failed.")
         raise e

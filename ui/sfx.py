@@ -11,7 +11,7 @@ if __name__ == "__main__":
 else:
     from .conf_app import SHINANO_LOVE
 
-def get_devices(capture_devices=False):
+def get_devices(capture_devices=False) -> tuple:
     init_by_me = not pygame.mixer.get_init()
     if init_by_me:
         pygame.mixer.init()
@@ -20,7 +20,9 @@ def get_devices(capture_devices=False):
         pygame.mixer.quit()
     return devices
 
-def sound_mail(device=get_devices()[0]):
+vminput = "VoiceMeeter Input (VB-Audio VoiceMeeter VAIO)"
+default_device = vminput if vminput in get_devices() else get_devices()[-1]
+def sound_mail(device=default_device):
     pygame.mixer.init(frequency=48000, devicename=device, buffer=8192)
     sound_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),"res","mp3")
     soundlist = os.listdir(sound_path)
@@ -52,5 +54,6 @@ def sound_guard():
         pygame.time.Clock().tick(100)
 
 if __name__ == "__main__":
-    sound_mail()
-    sound_guard()
+    # sound_mail()
+    # sound_guard()
+    print(get_devices())
