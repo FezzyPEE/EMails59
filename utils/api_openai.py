@@ -6,7 +6,6 @@ from .conf_openai import *
 
 # import sleep
 from time import sleep
-from tqdm import tqdm
 
 def set_proxy():
     os.environ['HTTP_PROXY'] = "http://10.30.69.253:7890"
@@ -169,12 +168,11 @@ if __name__ == "__main__":
         print("Waiting>>",end="",flush=True)
         # sleep(0.5)
         # display the realtime waiting animation
-        for i in tqdm(range(1), desc="Waiting", ascii=False, ncols=60):
-            chat_user_input(
-                inputString,
-                messages,
-                logs,
-            )
+        chat_user_input(
+            inputString,
+            messages,
+            logs,
+        )
         print("Assistant: ",messages[-1]["content"],"\n")
 
 

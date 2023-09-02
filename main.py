@@ -19,9 +19,10 @@ def check_emails():
         for email in emails:
             if email.checked == False:
                 notification("New Email", email)
-                sound_mail()
+                # sound_mail()
                 sound_guard()
                 setattr(email, "checked", True)
+                emails_dump_json(account, [email])
         emails_dump_json(account, emails)
 
 def set_checked_all():
