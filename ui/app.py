@@ -19,31 +19,15 @@ import ctypes
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 if __name__ == "__main__":
-    from sfx import sound_mail, sound_guard
+    from sfx import should_play_sound, sound_mail, already_playing
     from conf_app import *
 else:
     from .conf_app import *
-    from .sfx import sound_mail, sound_guard
-
-playing_sound = False
-already_playing = False
-
-def sound_loop():
-    global playing_sound
-    global already_playing
-    while playing_sound:
-        try:
-            if not already_playing:
-                already_playing = True
-                sound_mail()
-                time.sleep(20)
-                already_playing = False
-        except:
-            break
+    from .sfx import should_play_sound, sound_mail, already_playing
 
 def close_message_box(messagebox):
-    global playing_sound
-    playing_sound = False
+    global should_play_sound
+    should_play_sound = False
     print("Close message box.")
     messagebox.destroy()
 
@@ -74,16 +58,35 @@ def msgbox(title, message):
     
     messagebox.mainloop()
 
+def sound_loop():
+    print("sound loop")
+    global should_play_sound
+    global already_playing
+    while should_play_sound:
+        try:
+            if not already_playing:
+                already_playing = True
+                sound_mail()
+                time.sleep(20)
+                already_playing = False
+            else:
+                print("already playing")
+                break
+        except:
+            break
+    print("sound loop end")
+
 def notification(title, message):
     
+    global should_play_sound
+    should_play_sound = True
     thread_sound = threading.Thread(target=sound_loop)
     thread_window = threading.Thread(target=msgbox, args=(title, message))
-    global playing_sound
-    playing_sound = True
     thread_sound.start()
     thread_window.start()
 
     thread_window.join()
+    should_play_sound = False
     
 
 # test

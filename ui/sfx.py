@@ -20,7 +20,7 @@ def get_devices(capture_devices=False) -> tuple:
         pygame.mixer.quit()
     return devices
 
-vminput = "VoiceMeeter Input (VB-Audio VoiceMeeter VAIO)"
+vminput = "VoiceMeeter VAIO3 Input (VB-Audio VoiceMeeter VAIO3)"
 default_device = vminput if vminput in get_devices() else get_devices()[-1]
 def sound_mail(device=default_device):
     pygame.mixer.init(frequency=48000, devicename=device, buffer=8192)
@@ -35,6 +35,8 @@ def sound_mail(device=default_device):
         soundfile = os.path.join(sound_path,soundlist[0])
     else:
         soundfile = os.path.join(sound_path,"mail_shinano.mp3")
+        if not os.path.exists(soundfile):
+            soundfile = os.path.join(sound_path,soundlist[0])
     playsound(soundfile)
 
 def playsound(soundfile):
@@ -49,9 +51,14 @@ def playsound(soundfile):
     # channel = sound.play(fade_ms=300)
     # channel.set_volume(0.4,0.45)
 
+should_play_sound = False
+already_playing = False
+
 def sound_guard():
-    while pygame.mixer.get_busy():
+    while pygame.mixer.get_busy() or already_playing or should_play_sound:
         pygame.time.Clock().tick(100)
+
+
 
 if __name__ == "__main__":
     # sound_mail()
